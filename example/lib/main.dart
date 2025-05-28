@@ -8,28 +8,13 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'GigView',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: const MyHomePage(title: 'Gif View Example'),
@@ -45,7 +30,7 @@ List<String> gifs = [
 ];
 
 class PreCachePage extends StatefulWidget {
-  const PreCachePage({Key? key}) : super(key: key);
+  const PreCachePage({super.key});
 
   @override
   State<PreCachePage> createState() => _PreCachePageState();
@@ -70,9 +55,9 @@ class _PreCachePageState extends State<PreCachePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder:
-                              (context) =>
-                                  const MyHomePage(title: 'Gif View Example'),
+                          builder: (context) => const MyHomePage(
+                            title: 'Gif View Example',
+                          ),
                         ),
                       );
                     },
@@ -91,7 +76,7 @@ class _PreCachePageState extends State<PreCachePage> {
                       ValueListenableBuilder(
                         valueListenable: gifLoading,
                         builder: (context, value, child) {
-                          return Text('$value');
+                          return Text(value);
                         },
                       ),
                       const SizedBox(height: 16),
@@ -109,9 +94,9 @@ class _PreCachePageState extends State<PreCachePage> {
 
   Future<void> _preCacheGif() async {
     for (final gif in gifs) {
-      ImageProvider provider =
-          (gif.startsWith('http') ? NetworkImage(gif) : AssetImage(gif))
-              as ImageProvider;
+      ImageProvider provider = (gif.startsWith('http')
+          ? NetworkImage(gif)
+          : AssetImage(gif)) as ImageProvider;
       gifLoading.value = gif;
       await GifView.preFetchImage(provider);
     }
@@ -119,7 +104,7 @@ class _PreCachePageState extends State<PreCachePage> {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({super.key, required this.title});
 
   final String title;
 
@@ -160,9 +145,9 @@ class _MyHomePageState extends State<MyHomePage> {
               GifView.network(
                 gifs[2],
                 height: 200,
-                progressBuilder:
-                    (context) =>
-                        const Center(child: CircularProgressIndicator()),
+                progressBuilder: (context) => const Center(
+                  child: CircularProgressIndicator(),
+                ),
                 errorBuilder: (context, error, tryAgain) {
                   return InkWell(
                     onTap: tryAgain,
@@ -187,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class MyPage extends StatelessWidget {
   final controller = GifController();
-  MyPage({Key? key}) : super(key: key);
+  MyPage({super.key});
 
   @override
   Widget build(BuildContext context) {

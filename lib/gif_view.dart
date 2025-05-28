@@ -1,13 +1,12 @@
-library gif_view;
+library;
 
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:gif_view/src/gif_cache_provider.dart';
 import 'package:gif_view/src/gif_controller.dart';
 import 'package:gif_view/src/gif_frame_builder.dart';
-
-import 'package:gif_view/src/gif_cache_provider.dart';
 import 'package:gif_view/src/gif_loader.dart';
 
 export 'package:gif_view/src/gif_cache_provider.dart';
@@ -33,8 +32,7 @@ class GifView extends StatefulWidget {
     BuildContext context,
     Object error,
     VoidCallback tryAgain,
-  )?
-  errorBuilder;
+  )? errorBuilder;
   final WidgetBuilder? progressBuilder;
 
   /// How to fit the image within its bounds.
@@ -137,7 +135,6 @@ class GifView extends StatefulWidget {
 
   GifView.memory(
     Uint8List bytes, {
-
     super.key,
     this.controller,
     this.frameRate,
@@ -330,11 +327,10 @@ class GifViewState extends State<GifView> with SingleTickerProviderStateMixin {
     try {
       final data = await GifLoader.instance.fetch(widget.image);
       if (data != null) {
-        final frames =
-            await GifFrameBuilder(
-              data: data,
-              frameRate: widget.frameRate,
-            ).build();
+        final frames = await GifFrameBuilder(
+          data: data,
+          frameRate: widget.frameRate,
+        ).build();
         if (frames.isNotEmpty) {
           widget.onLoaded?.call(frames.length);
           controller.configure(frames, updateFrames: updateFrames);
