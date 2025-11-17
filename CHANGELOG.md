@@ -1,3 +1,13 @@
+## 1.0.4
+* Updated homepage to match current repository
+* Updated http dependency to ^1.2.0 for better compatibility
+* Improved error handling in GifLoader with proper completer cleanup
+* Enhanced documentation for frameRate parameter
+* Fixed typo in CHANGELOG.md ("Raneme" -> "Rename")
+* Added progress getter to GifController for current animation progress (0.0 to 1.0)
+* Added seekToProgress method to GifController for seeking by percentage
+* Improved error handling in GifFrameBuilder with better error messages
+
 ## 1.0.3
 * Rebuilt android folder in example using modern flutter code
 * added status.completed, corrected status.stopped
@@ -23,7 +33,7 @@
     - Remove params of `GifController` constructor and move to widget constructor.
     - Rename progress param to progressBuilder
     - Rename error param to errorBuilder
-    - Raneme repeat param to imageRepeat;
+    - Rename repeat param to imageRepeat;
 
 ## 0.4.4
 

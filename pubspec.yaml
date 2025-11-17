@@ -1,7 +1,7 @@
 name: gif_view
 description: Load GIF images and can set framerate
-version: 1.0.3
-homepage: https://github.com/RafaelBarbosatec/gif_view
+version: 1.0.4
+homepage: https://github.com/p-Osteen/gif_view
 
 environment:
   sdk: ">=3.4.0 <4.0.0"
@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^1.4.0
+  http: ^1.2.0
 
 dev_dependencies:
   flutter_test:
