@@ -182,28 +182,46 @@ await GifView.clearCache();
 
 ### Custom Cache Provider
 
-You can implement your own caching strategy by setting a custom cache provider:
+You can integrate with `flutter_cache_manager` for advanced caching capabilities:
+
+```yaml
+dependencies:
+  flutter_cache_manager: ^3.3.0
+```
 
 ```dart
-class MyCustomCacheProvider implements GifCacheProvider {
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+
+class FlutterCacheManagerProvider implements GifCacheProvider {
+  final DefaultCacheManager _cacheManager = DefaultCacheManager();
+
   @override
   Future<void> set(String key, Uint8List data) async {
-    // Custom cache implementation
+    await _cacheManager.putFile(
+      key,
+      data,
+      key: key,
+      eTag: key,
+    );
   }
 
   @override
   Future<Uint8List?> get(String key) async {
-    // Custom retrieval implementation
+    final file = await _cacheManager.getFileFromCache(key);
+    if (file != null) {
+      return await file.file.readAsBytes();
+    }
+    return null;
   }
 
   @override
   Future<void> clear() async {
-    // Custom clear implementation
+    await _cacheManager.emptyCache();
   }
 }
 
-// Set custom provider
-GifView.setCacheProvider(MyCustomCacheProvider());
+// Set flutter_cache_manager as provider
+GifView.setCacheProvider(FlutterCacheManagerProvider());
 
 // Revert to default provider
 GifView.setCacheProvider(null);
