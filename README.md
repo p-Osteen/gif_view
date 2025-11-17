@@ -53,65 +53,86 @@ Add `gif_view` as a [dependency in your pubspec.yaml file](https://flutter.dev/u
   )
 ```
 
-## Atributes
+## Attributes
 
-| Name | Description  | Default  |
-| ------- | --- | --- |
-| controller | - | - |
-| frameRate | - | - | 
-| height | - | - | 
-| width | - | - | 
-| fit | - | - | 
-| color | - | - | 
-| colorBlendMode | - | - | 
-| alignment | - | `Alignment.center` |
-| imageRepeat | - |  `ImageRepeat.noRepeat` |
-| centerSlice | - | - | 
-| matchTextDirection | - | `false` |
-| invertColors | - | `false` |
-| filterQuality | - | `FilterQuality.low` |
-| isAntiAlias | - | `false` |
-| onFinish | - | - | 
-| onStart | - | - | 
-| onFrame | - | - | 
-| onLoaded | - | - | 
-| loop | - | - | 
-| playInverted | - | - | 
-| errorBuilder | You can return a widget to show when happen error | - | 
-| progressBuilder | You can return a widget to show while loading | - |
-| scale | - | `1.0` |
-| headers | - | - | 
+| Name | Description | Default |
+|------|-------------|---------|
+| controller | Optional controller to manage GIF playback externally | - |
+| frameRate | Duration between frames in milliseconds. If null, uses original GIF frame rate | - |
+| height | The height of the GIF view widget | - |
+| width | The width of the GIF view widget | - |
+| fit | How to fit the image within its bounds (BoxFit enum) | BoxFit.contain |
+| color | Color to blend with the image | - |
+| colorBlendMode | Blend mode for color overlay | - |
+| alignment | Alignment of the image within its bounds | `Alignment.center` |
+| imageRepeat | How to repeat the image | `ImageRepeat.noRepeat` |
+| centerSlice | Center slice for nine-patch scaling | - |
+| matchTextDirection | Whether to match text direction | `false` |
+| invertColors | Whether to invert image colors | `false` |
+| filterQuality | Quality of image filtering | `FilterQuality.low` |
+| isAntiAlias | Whether to use anti-aliasing | `false` |
+| withOpacityAnimation | Whether to use fade-in animation | `true` |
+| fadeDuration | Duration of fade-in animation | `Duration(milliseconds: 300)` |
+| autoPlay | Whether to auto-start playback | `true` |
+| loop | Whether to loop the animation | `true` |
+| playInverted | Whether to play in reverse initially | `false` |
+| onFinish | Callback when animation completes | - |
+| onStart | Callback when animation starts | - |
+| onFrame | Callback for each frame change | - |
+| onLoaded | Callback when GIF is loaded with frame count | - |
+| errorBuilder | Builder for error state widget | - |
+| progressBuilder | Builder for loading state widget | - |
+| scale | Scale factor for network/memory images | `1.0` |
+| headers | HTTP headers for network requests | - | 
 
 
 ## Controller
 
+The `GifController` provides programmatic control over GIF playback:
+
 ```dart
+GifController controller = GifController();
 
-  GifController controller = GifController();
+// Playback control
+controller.play({bool? inverted, int? initialFrame});  // Start/resume playback
+controller.pause();                                    // Pause playback
+controller.stop();                                     // Stop and reset to first frame
 
-  controller.play({bool? inverted, int? initialFrame});
+// Seeking
+controller.seek(34);                                   // Seek to specific frame
+controller.seekToProgress(0.5);                        // Seek to 50% of animation
 
-  controller.pause();
+// Status and progress
+GifStatus status = controller.status;                  // Current playback status
+double progress = controller.progress;                 // Current progress (0.0 to 1.0)
 
-  controller.stop();
-
-  controller.seek(34);
-
-  controller.seekToProgress(0.5); // Seek to 50% of the animation
-
-  GifStatus status = controller.status;
-  double progress = controller.progress; // Get current progress (0.0 to 1.0)
-  // GifStatus { loading, playing, stopped, paused, reversing, completed, error }
-
+// Available statuses: loading, playing, stopped, paused, reversing, completed, error
 ```
 
-## Controller use simple example
+## Controller Example
 
 ```dart
+class MyPage extends StatefulWidget {
+  const MyPage({super.key});
 
-class MyPage extends StatelessWidget {
-  final controller = GifController();
-  MyPage({Key? key}) : super(key: key);
+  @override
+  State<MyPage> createState() => _MyPageState();
+}
+
+class _MyPageState extends State<MyPage> {
+  late final GifController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = GifController();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,30 +149,35 @@ class MyPage extends StatelessWidget {
             controller.play();
           }
         },
+        child: Icon(
+          controller.status == GifStatus.playing
+              ? Icons.pause
+              : Icons.play_arrow,
+        ),
       ),
     );
   }
 }
-
-
 ```
 
 ## Cache Management
 
 ### Pre-fetching Images
 
-GifView provides a static `preFetch` method to load and cache GIF images ahead of time for better performance:
+GifView provides a static `preFetchImage` method to load and cache GIF images ahead of time for better performance:
 
 ```dart
-// Pre-fetch single or multiple GIFs
-// Asset
-await GifView.preFetch(AssetImage('my/path/item.gif'));
-// Network
-await GifView.preFetch(NetworkImage('http://my/path/item.gif'));
-// Memory
-await GifView.preFetch(MemoryImage(Uint8List()));
-// File
-await GifView.preFetch(FileImage(File()));
+// Pre-fetch different types of images
+await GifView.preFetchImage(AssetImage('assets/my-gif.gif'));
+await GifView.preFetchImage(NetworkImage('https://example.com/gif.gif'));
+await GifView.preFetchImage(MemoryImage(bytes));
+await GifView.preFetchImage(FileImage(File('path/to/gif.gif')));
+```
+
+### Clearing Cache
+
+```dart
+await GifView.clearCache();
 ```
 
 ### Custom Cache Provider
@@ -159,10 +185,9 @@ await GifView.preFetch(FileImage(File()));
 You can implement your own caching strategy by setting a custom cache provider:
 
 ```dart
-// Create custom provider
 class MyCustomCacheProvider implements GifCacheProvider {
   @override
-  Future<void> add(String key, Uint8List bytes) async {
+  Future<void> set(String key, Uint8List data) async {
     // Custom cache implementation
   }
 
