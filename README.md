@@ -183,3 +183,7 @@ GifView.setCacheProvider(MyCustomCacheProvider());
 // Revert to default provider
 GifView.setCacheProvider(null);
 ```
+
+## Credits
+
+This package is a fork/continuation of the original [gif_view](https://github.com/RafaelBarbosatec/gif_view) package by Rafael Barbosa. We acknowledge and thank the original author for their work on this Flutter GIF viewing library.
