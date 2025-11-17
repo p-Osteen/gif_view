@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
-import 'package:gif_view/src/git_frame.dart';
+import 'package:gif_view/src/gif_frame.dart';
 
 class GifFrameBuilder {
   final Uint8List data;

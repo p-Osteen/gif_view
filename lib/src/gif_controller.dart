@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gif_view/src/git_frame.dart';
+import 'package:gif_view/src/gif_frame.dart';
 
 enum GifStatus {
   loading,
@@ -65,6 +65,11 @@ class GifController extends ChangeNotifier {
     }
   }
 
+  Duration get totalDuration {
+    if (_frames.isEmpty) return Duration.zero;
+    return _frames.map((f) => f.duration).reduce((a, b) => a + b);
+  }
+
   void _runNextFrame() async {
     if (_isDisposed || _frames.isEmpty) {
       return;
@@ -123,8 +128,7 @@ class GifController extends ChangeNotifier {
         status == GifStatus.paused) {
       status = _inverted ? GifStatus.reversing : GifStatus.playing;
 
-      bool isValidInitialFrame =
-          initialFrame != null &&
+      bool isValidInitialFrame = initialFrame != null &&
           initialFrame > 0 &&
           initialFrame < _frames.length - 1;
 
