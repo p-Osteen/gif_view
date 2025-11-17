@@ -112,6 +112,7 @@ class GifController extends ChangeNotifier {
 
   GifFrame get currentFrame => _frames[_currentIndex];
   int get countFrames => _frames.length;
+  double get progress => _frames.isEmpty ? 0.0 : _currentIndex / (_frames.length - 1);
   bool get isReversing => status == GifStatus.reversing;
   bool get isPaused =>
       status == GifStatus.completed ||
@@ -161,6 +162,12 @@ class GifController extends ChangeNotifier {
   void seek(int index) {
     if (_frames.isEmpty || _isDisposed) return;
     _currentIndex = (index % _frames.length);
+    notifyListeners();
+  }
+
+  void seekToProgress(double progress) {
+    if (_frames.isEmpty || _isDisposed) return;
+    _currentIndex = ((progress.clamp(0.0, 1.0) * (_frames.length - 1)).round());
     notifyListeners();
   }
 

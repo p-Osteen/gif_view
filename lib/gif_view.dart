@@ -17,7 +17,8 @@ class GifView extends StatefulWidget {
   final GifController? controller;
 
   /// Duration between frames in the GIF animation.
-  /// Defaults is the fps original file
+  /// If null, uses the original frame rate from the GIF file.
+  /// If specified, overrides the original frame rate with the given value in milliseconds.
   final int? frameRate;
   final ImageProvider image;
 

@@ -92,12 +92,13 @@ class GifLoader {
     try {
       Uint8List? data = await _loadImageBytes(provider);
       if (data != null) {
-        _cacheProvider.set(key, data);
+        await _cacheProvider.set(key, data);
       }
       completer.complete(data);
-      _loadCompleters.remove(key);
     } catch (e) {
       completer.completeError(e);
+    } finally {
+      _loadCompleters.remove(key);
     }
   }
 }

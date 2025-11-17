@@ -14,26 +14,30 @@ class GifFrameBuilder {
   });
 
   Future<List<GifFrame>> build() async {
-    Codec codec = await instantiateImageCodec(
-      data,
-      allowUpscaling: false,
-    );
-
-    List<GifFrame> list = [];
-
-    for (int i = 0; i < codec.frameCount; i++) {
-      FrameInfo frameInfo = await codec.getNextFrame();
-      Duration duration = frameInfo.duration;
-      if (frameRate != null) {
-        duration = Duration(milliseconds: (1000 / frameRate!).ceil());
-      }
-      list.add(
-        GifFrame(
-          ImageInfo(image: frameInfo.image),
-          duration,
-        ),
+    try {
+      Codec codec = await instantiateImageCodec(
+        data,
+        allowUpscaling: false,
       );
+
+      List<GifFrame> list = [];
+
+      for (int i = 0; i < codec.frameCount; i++) {
+        FrameInfo frameInfo = await codec.getNextFrame();
+        Duration duration = frameInfo.duration;
+        if (frameRate != null) {
+          duration = Duration(milliseconds: (1000 / frameRate!).ceil());
+        }
+        list.add(
+          GifFrame(
+            ImageInfo(image: frameInfo.image),
+            duration,
+          ),
+        );
+      }
+      return list;
+    } catch (e) {
+      throw Exception('Failed to decode GIF: $e');
     }
-    return list;
   }
 }
