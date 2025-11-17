@@ -97,8 +97,11 @@ Add `gif_view` as a [dependency in your pubspec.yaml file](https://flutter.dev/u
 
   controller.seek(34);
 
+  controller.seekToProgress(0.5); // Seek to 50% of the animation
+
   GifStatus status = controller.status;
-  // GifStatus { loading, playing, stoped, paused, reversing }
+  double progress = controller.progress; // Get current progress (0.0 to 1.0)
+  // GifStatus { loading, playing, stopped, paused, reversing, completed, error }
 
 ```
 
